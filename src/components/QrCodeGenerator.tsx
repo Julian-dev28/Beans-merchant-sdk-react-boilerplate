@@ -45,9 +45,11 @@ const QrCodeGenerator: React.FC = () => {
     setLoading(true);
     try {
       if (!sdk || !formData.selectedCurrency) {
-        throw new Error(
-          "SDK not initialized or currency not selected. Please check the environment settings and API key, and select a currency."
-        );
+        alert("Please select a currency");
+        // throw new Error(
+        //   "SDK not initialized or currency not selected. Please check the environment settings and API key, and select a currency."
+        // );
+        return;
       }
       const response: SvgQrCodeResponse = await sdk.generateSvgQrCode(
         formData.stellarAccountId,
