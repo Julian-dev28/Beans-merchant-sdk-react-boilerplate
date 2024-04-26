@@ -12,7 +12,7 @@ import "./styles.css";
 
 const QrCodeGenerator: React.FC = () => {
   const [formData, setFormData] = useState<IFormState>({
-    environment: "",
+    environment: `${BeansMerchantSdkEnvironment.PRODUCTION}`,
     customEnvironment: "",
     apiKey: "4C3D-2E1F-7G8H-5I6J",
     stellarAccountId:
@@ -90,18 +90,22 @@ const QrCodeGenerator: React.FC = () => {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { value } = event.target;
-    const newEnvironment: string =
-      value === "production"
-        ? BeansMerchantSdkEnvironment.PRODUCTION
-        : value === "staging"
-        ? BeansMerchantSdkEnvironment.STAGING
-        : (value as BeansMerchantSdkEnvironment);
-    setEnvironment(newEnvironment);
-
-    setFormData((prevState) => ({
-      ...prevState,
-      environment: value,
-    }));
+    try {
+      const newEnvironment: string =
+        value === "production"
+          ? BeansMerchantSdkEnvironment.PRODUCTION
+          : value === "staging"
+          ? BeansMerchantSdkEnvironment.STAGING
+          : (value as BeansMerchantSdkEnvironment);
+      setEnvironment(newEnvironment);
+      setFormData((prevState) => ({
+        ...prevState,
+        environment: newEnvironment,
+      }));
+      console.log("Environment changed to:", newEnvironment);
+    } catch (err) {
+      console.error("Error when changing environment:", err);
+    }
   };
 
   return (
@@ -117,8 +121,10 @@ const QrCodeGenerator: React.FC = () => {
             onChange={handleEnvironmentChange}
             className="form-control"
           >
-            <option value="api.staging.beansapp.com">Staging</option>
-            <option value="api.beansapp.com">Production</option>
+            <option value={BeansMerchantSdkEnvironment.STAGING}>Staging</option>
+            <option value={BeansMerchantSdkEnvironment.PRODUCTION}>
+              Production
+            </option>
             <option value="custom">Custom</option>
           </select>
         </div>
