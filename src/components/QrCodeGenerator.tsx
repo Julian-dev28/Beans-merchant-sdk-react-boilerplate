@@ -14,9 +14,8 @@ const QrCodeGenerator: React.FC = () => {
   const [formData, setFormData] = useState<IFormState>({
     environment: `${BeansMerchantSdkEnvironment.PRODUCTION}`,
     customEnvironment: "",
-    apiKey: "4C3D-2E1F-7G8H-5I6J",
-    stellarAccountId:
-      "GB3I2Q2G2VHHNRYXILFVVXFY5GF6XQVFYUV4YGUDV7WKZJZVCKHSWJYI",
+    apiKey: `${BeansMerchantSdkEnvironment.API_KEY}`,
+    stellarAccountId: `${BeansMerchantSdkEnvironment.ACCOUNT_ID}`,
     selectedCurrency: null,
     amount: "",
     memo: "Vertex",
@@ -27,6 +26,7 @@ const QrCodeGenerator: React.FC = () => {
     BeansMerchantSdkEnvironment.PRODUCTION
   );
   const [currencies, setCurrencies] = useState<StellarCurrency[]>([]);
+  const [stellarAccountId, setStellarAccountId] = useState<string>(""); // Adjust type as necessary
   const [qrCodeSvg, setQrCodeSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -108,6 +108,18 @@ const QrCodeGenerator: React.FC = () => {
     }
   };
 
+  // const handleStellarAccountIdChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   try {
+  //     const { value } = event.target;
+  //     setStellarAccountId(value);
+  //     console.log("Stellar Account ID changed to:", value);
+  //   } catch (err) {
+  //     console.error("Error when changing Stellar Account ID:", err);
+  //   }
+  // };
+
   return (
     <div>
       <Header />
@@ -142,7 +154,7 @@ const QrCodeGenerator: React.FC = () => {
             />
           </div>
         )}
-        <div className="form-group">
+        {/* <div className="form-group">
           <label htmlFor="apiKey">API Key</label>
           <input
             type="text"
@@ -153,19 +165,19 @@ const QrCodeGenerator: React.FC = () => {
             className="form-control"
             placeholder="Enter API Key"
           />
-        </div>
-        <div className="form-group">
+        </div> */}
+        {/* <div className="form-group">
           <label htmlFor="stellarAccountId">Stellar Account ID</label>
           <input
             type="text"
             id="stellarAccountId"
             name="stellarAccountId"
             value={formData.stellarAccountId}
-            onChange={handleChange}
+            onChange={handleStellarAccountIdChange}
             className="form-control"
             placeholder="Enter Stellar Account ID"
           />
-        </div>
+        </div> */}
         <div className="form-group">
           <label htmlFor="selectedCurrency">Select Currency</label>
           <select
