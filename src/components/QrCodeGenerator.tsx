@@ -22,11 +22,11 @@ const QrCodeGenerator: React.FC = () => {
     maxAllowedPayments: 1,
     webhookUrl: "",
   });
-  const [environment, setEnvironment] = useState<string>( // Adjust type as necessary
+  const [environment, setEnvironment] = useState<string>(
     BeansMerchantSdkEnvironment.PRODUCTION
   );
   const [currencies, setCurrencies] = useState<StellarCurrency[]>([]);
-  const [stellarAccountId, setStellarAccountId] = useState<string>(""); // Adjust type as necessary
+  // const [stellarAccountId, setStellarAccountId] = useState<string>("");
   const [qrCodeSvg, setQrCodeSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
