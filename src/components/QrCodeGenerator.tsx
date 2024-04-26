@@ -6,12 +6,13 @@ import {
   FetchStellarCurrenciesResponse,
   StellarCurrency,
 } from "../sdk/sdk";
+import { BeansMerchantSdkEnvironment } from "../sdk/environment";
 import { IFormState } from "../interfaces/IFormState";
 import "./styles.css";
 
 const QrCodeGenerator: React.FC = () => {
   const [formData, setFormData] = useState<IFormState>({
-    environment: "api.beansapp.com",
+    environment: "",
     customEnvironment: "",
     apiKey: "4C3D-2E1F-7G8H-5I6J",
     stellarAccountId:
@@ -22,6 +23,9 @@ const QrCodeGenerator: React.FC = () => {
     maxAllowedPayments: 1,
     webhookUrl: "",
   });
+  const [environment, setEnvironment] = useState<string>( // Adjust type as necessary
+    BeansMerchantSdkEnvironment.PRODUCTION
+  );
   const [currencies, setCurrencies] = useState<StellarCurrency[]>([]);
   const [qrCodeSvg, setQrCodeSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -82,6 +86,24 @@ const QrCodeGenerator: React.FC = () => {
     }
   };
 
+  const handleEnvironmentChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { value } = event.target;
+    const newEnvironment: string =
+      value === "production"
+        ? BeansMerchantSdkEnvironment.PRODUCTION
+        : value === "staging"
+        ? BeansMerchantSdkEnvironment.STAGING
+        : (value as BeansMerchantSdkEnvironment);
+    setEnvironment(newEnvironment);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      environment: value,
+    }));
+  };
+
   return (
     <div>
       <Header />
@@ -92,7 +114,7 @@ const QrCodeGenerator: React.FC = () => {
             id="environment"
             name="environment"
             value={formData.environment}
-            onChange={handleChange}
+            onChange={handleEnvironmentChange}
             className="form-control"
           >
             <option value="api.staging.beansapp.com">Staging</option>
