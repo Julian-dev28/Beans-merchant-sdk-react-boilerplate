@@ -87,6 +87,23 @@ const Account: React.FC = () => {
     });
   };
 
+  const streamingPayments = () => {
+    const es = new EventSource(
+      `https://horizon.stellar.org/accounts/${accountId}/payments`
+    );
+
+    es.onmessage = (message) => {
+      const payment = JSON.parse(message.data);
+      console.log("Payment received:", payment);
+    };
+
+    es.onerror = (error) => {
+      console.error("error: REFRESH PAGE OR MAKE A PAYMENT TO STOP", error);
+    };
+  };
+
+  const stopStreamingPayments = () => {};
+
   return (
     <div className="account-container">
       <h1 className="account-heading">Account Balances</h1>
@@ -108,6 +125,17 @@ const Account: React.FC = () => {
           </li>
         ))}
       </ul>
+      <h1 className="account-heading">Streaming Payments</h1>
+      <h3 className="account-subheading"> Open console to see payments</h3>
+      <button
+        style={{ border: "1px solid #000", padding: "5px", margin: "1px" }}
+        className="btn"
+        onClick={streamingPayments}
+      >
+        Start Streaming Payments
+      </button>
+      <br />
+      <br />
       <h1 className="account-heading">Transaction History</h1>
       <button
         style={{ border: "1px solid #000", padding: "5px", margin: "1px" }}
