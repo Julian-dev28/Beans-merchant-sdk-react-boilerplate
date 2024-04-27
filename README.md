@@ -2,7 +2,7 @@
 
 This repository contains a boilerplate React app designed for the Beans merchant SDK. It generates a QR code for payment requests in USDC or XLM on the Stellar network.
 
-<img src="./shot.png" alt="image" width="50%" height="50%">
+<img src="./shot.png" alt="image" width="80%" height="80%">
 
 <br/>
 
