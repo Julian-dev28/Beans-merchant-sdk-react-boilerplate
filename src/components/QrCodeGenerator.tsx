@@ -8,24 +8,24 @@ import {
 } from "../sdk/sdk";
 import { BeansMerchantSdkEnvironment } from "../sdk/environment";
 import { IFormState } from "../interfaces/IFormState";
+import * as StellarSdk from "@stellar/stellar-sdk";
 import "./styles.css";
+import Account from "./Account";
+const server = new StellarSdk.Horizon.Server("https://horizon.stellar.org");
+const accountId = `${BeansMerchantSdkEnvironment.ACCOUNT_ID}`;
 
 const QrCodeGenerator: React.FC = () => {
   const [formData, setFormData] = useState<IFormState>({
     environment: `${BeansMerchantSdkEnvironment.PRODUCTION}`,
     customEnvironment: "",
-    apiKey: "4C3D-2E1F-7G8H-5I6J",
-    stellarAccountId:
-      "GB3I2Q2G2VHHNRYXILFVVXFY5GF6XQVFYUV4YGUDV7WKZJZVCKHSWJYI",
+    apiKey: `${BeansMerchantSdkEnvironment.API_KEY}`,
+    stellarAccountId: `${BeansMerchantSdkEnvironment.ACCOUNT_ID}`,
     selectedCurrency: null,
-    amount: "",
-    memo: "Vertex",
+    amount: "10",
+    memo: "Vertex Community Payment",
     maxAllowedPayments: 1,
     webhookUrl: "",
   });
-  const [environment, setEnvironment] = useState<string>( // Adjust type as necessary
-    BeansMerchantSdkEnvironment.PRODUCTION
-  );
   const [currencies, setCurrencies] = useState<StellarCurrency[]>([]);
   const [qrCodeSvg, setQrCodeSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -45,13 +45,24 @@ const QrCodeGenerator: React.FC = () => {
     }
   }, [formData.environment, formData.apiKey, formData.stellarAccountId]);
 
+  const getBalance = async () => {
+    const account = await server.loadAccount(accountId);
+    console.log("Balances for account: " + accountId);
+    account.balances.forEach(function (balance) {
+      console.log("Type:", balance.asset_type, ", Balance:", balance.balance);
+    });
+  };
+
+  useEffect(() => {
+    getBalance();
+  }, []);
+
   const handleGenerateQrCode = async () => {
     setLoading(true);
     try {
       if (!sdk || !formData.selectedCurrency) {
-        throw new Error(
-          "SDK not initialized or currency not selected. Please check the environment settings and API key, and select a currency."
-        );
+        alert("Please select a currency");
+        return;
       }
       const response: SvgQrCodeResponse = await sdk.generateSvgQrCode(
         formData.stellarAccountId,
@@ -86,167 +97,90 @@ const QrCodeGenerator: React.FC = () => {
     }
   };
 
-  const handleEnvironmentChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { value } = event.target;
-    try {
-      const newEnvironment: string =
-        value === "production"
-          ? BeansMerchantSdkEnvironment.PRODUCTION
-          : value === "staging"
-          ? BeansMerchantSdkEnvironment.STAGING
-          : (value as BeansMerchantSdkEnvironment);
-      setEnvironment(newEnvironment);
-      setFormData((prevState) => ({
-        ...prevState,
-        environment: newEnvironment,
-      }));
-      console.log("Environment changed to:", newEnvironment);
-    } catch (err) {
-      console.error("Error when changing environment:", err);
-    }
-  };
-
   return (
     <div>
       <Header />
-      <form>
-        <div className="form-group">
-          <label htmlFor="environment">Environment</label>
-          <select
-            id="environment"
-            name="environment"
-            value={formData.environment}
-            onChange={handleEnvironmentChange}
-            className="form-control"
-          >
-            <option value={BeansMerchantSdkEnvironment.STAGING}>Staging</option>
-            <option value={BeansMerchantSdkEnvironment.PRODUCTION}>
-              Production
-            </option>
-            <option value="custom">Custom</option>
-          </select>
-        </div>
-        {formData.environment === "custom" && (
+      <div className="form-container">
+        <form>
           <div className="form-group">
-            <label htmlFor="customEnvironment">Custom Environment URL</label>
-            <input
-              type="text"
-              id="customEnvironment"
-              name="customEnvironment"
-              value={formData.customEnvironment}
+            <label htmlFor="selectedCurrency">Select Currency</label>
+            <select
+              id="selectedCurrency"
+              name="selectedCurrency"
+              value={formData.selectedCurrency?.id || ""}
               onChange={handleChange}
               className="form-control"
-              placeholder="Enter custom environment URL"
+            >
+              <option value="">Select Currency</option>
+              {currencies.map((currency) => (
+                <option key={currency.id} value={currency.id}>
+                  {currency.name} ({currency.code})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="amount">Amount</label>
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter amount"
             />
           </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="apiKey">API Key</label>
-          <input
-            type="text"
-            id="apiKey"
-            name="apiKey"
-            value={formData.apiKey}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Enter API Key"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="stellarAccountId">Stellar Account ID</label>
-          <input
-            type="text"
-            id="stellarAccountId"
-            name="stellarAccountId"
-            value={formData.stellarAccountId}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Enter Stellar Account ID"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="selectedCurrency">Select Currency</label>
-          <select
-            id="selectedCurrency"
-            name="selectedCurrency"
-            value={formData.selectedCurrency?.id || ""}
-            onChange={handleChange}
-            className="form-control"
+          <div className="form-group">
+            <label htmlFor="memo">Memo</label>
+            <input
+              type="text"
+              id="memo"
+              name="memo"
+              value={formData.memo}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter memo"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="webhookUrl">Webhook URL (optional)</label>
+            <input
+              type="text"
+              id="webhookUrl"
+              name="webhookUrl"
+              value={formData.webhookUrl}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter webhook URL"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleGenerateQrCode}
+            className="btn btn-primary"
+            disabled={loading}
           >
-            <option value="">Select Currency</option>
-            {currencies.map((currency) => (
-              <option key={currency.id} value={currency.id}>
-                {currency.name} ({currency.code})
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="amount">Amount</label>
-          <input
-            type="number"
-            id="amount"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Enter amount"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="memo">Memo</label>
-          <input
-            type="text"
-            id="memo"
-            name="memo"
-            value={formData.memo}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Enter memo"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="webhookUrl">Webhook URL (optional)</label>
-          <input
-            type="text"
-            id="webhookUrl"
-            name="webhookUrl"
-            value={formData.webhookUrl}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Enter webhook URL"
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleGenerateQrCode}
-          className="btn btn-primary"
-          disabled={loading}
-        >
-          {loading ? "Generating..." : "Generate QR Code"}
-        </button>
-      </form>
-      {qrCodeSvg && (
-        <div className="qr-code-display">
-          <h3 style={{ marginTop: "0", marginBottom: "5px" }}>
-            Generated QR Code:
-          </h3>
-          <div
-            dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
-            style={{ maxWidth: "200px", maxHeight: "200px", overflow: "auto" }}
-          />
-        </div>
-      )}
+            {loading ? "Generating..." : "Generate QR Code"}
+          </button>
+        </form>
+        {qrCodeSvg && (
+          <div className="qr-code-container">
+            <div className="qr-code-display">
+              <h3>Generated QR Code:</h3>
+              <div dangerouslySetInnerHTML={{ __html: qrCodeSvg }} />
+            </div>
+          </div>
+        )}
+      </div>
 
       {error && (
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
       )}
+      <Account />
     </div>
   );
 };
-
 export default QrCodeGenerator;
