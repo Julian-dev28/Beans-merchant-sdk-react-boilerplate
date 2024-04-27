@@ -172,3 +172,20 @@ form {
   font-weight: bold;
   color: #007bff;
 }
+
+.transaction-list {
+  list-style: none;
+  padding: 0;
+}
+
+.transaction-item {
+  background-color: #f8f9fa; /* Background color */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 20px; /* Padding */
+  margin-bottom: 10px; /* Margin between items */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+}
+
+.transaction-item strong {
+  color: #007bff; /* Color for keys */
+}

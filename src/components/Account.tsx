@@ -9,15 +9,20 @@ interface Balance {
   balance: number;
 }
 
+interface Transaction {
+  id: string;
+  source_account: string;
+  created_at: string;
+  memo: string;
+}
+
 const Account: React.FC = () => {
   const [accountBalances, setAccountBalances] = useState<Balance[]>([]);
+  const [transactionHistoryResult, setTransactionHistoryResult] = useState(
+    [] as Transaction[]
+  );
 
   const getBalance = async () => {
-    // const account = await server.loadAccount(accountId);
-    // console.log("Balances for account: " + accountId);
-    // account.balances.forEach(function (balance) {
-    //   console.log("Type:", balance.asset_type, ", Balance:", balance.balance);
-    // });
     try {
       const loadedAccount = await server.loadAccount(accountId);
 
@@ -54,6 +59,34 @@ const Account: React.FC = () => {
     }
   };
 
+  const transactionHistory = async () => {
+    try {
+      const transactions = await server
+        .transactions()
+        .forAccount(accountId)
+        .call();
+
+      setTransactionHistoryResult(
+        transactions.records as unknown as Transaction[]
+      );
+    } catch (err) {
+      console.error("Error loading transaction history:", err);
+    }
+  };
+
+  useEffect(() => {
+    getBalance();
+    transactionHistory();
+  }, []);
+
+  const sortTransactionsByCreatedAt = (transactions: Transaction[]) => {
+    return transactions.sort((a, b) => {
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    });
+  };
+
   return (
     <div className="account-container">
       <h1 className="account-heading">Account Balances</h1>
@@ -67,7 +100,6 @@ const Account: React.FC = () => {
           {accountId}
         </a>
       </h4>
-
       <ul className="balance-list">
         {accountBalances.map((balance, index) => (
           <li key={index} className="balance-item">
@@ -75,6 +107,29 @@ const Account: React.FC = () => {
             <strong>Balance:</strong> {balance.balance}
           </li>
         ))}
+      </ul>
+      <h1 className="account-heading">Transaction History</h1>
+      <button
+        style={{ border: "1px solid #000", padding: "5px", margin: "1px" }}
+        className="btn"
+        onClick={transactionHistory}
+      >
+        Load Transaction History
+      </button>
+      <ul className="transaction-list">
+        {sortTransactionsByCreatedAt(transactionHistoryResult).map(
+          (transaction, index) => (
+            <li key={index} className="transaction-item">
+              Transaction ID: {transaction.id}
+              <br />
+              Source Account: {transaction.source_account}
+              <br />
+              Created At: {transaction.created_at}
+              <br />
+              Memo: {convertAssetType(transaction.memo)}
+            </li>
+          )
+        )}
       </ul>
     </div>
   );
