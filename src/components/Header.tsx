@@ -4,8 +4,8 @@ import vertexLogo from "./vertex.png";
 const Header: React.FC = () => {
   return (
     <div className="header-section">
+      <img src={vertexLogo} alt="Vertex Logo" className="header-logo" />
       <div className="header-container">
-        <img src={vertexLogo} alt="Vertex Logo" className="header-logo" />
         <h1 className="header-title mb-4">Vertex Community Pay</h1>
         <h2 className="header-subtitle mb-4">Stellar QR Code Generator</h2>
         <h3 className="header-powered-by mb-4">

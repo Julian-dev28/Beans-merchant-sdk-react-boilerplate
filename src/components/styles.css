@@ -95,21 +95,23 @@ form {
   flex: 1;
   margin-left: 20px; /* Adjust spacing between the form and the QR code */
 }
-
 .header-section {
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Center items vertically */
   background-color: #000;
   padding: 20px;
   border-radius: 10px;
 }
 
 .header-container {
+  flex: 1; /* Take remaining space */
   color: #fff;
   text-align: center;
 }
 
 .header-logo {
-  width: 150px; /* Adjust the size of the logo as needed */
-  margin-bottom: 20px;
+  width: 150px;
+  margin-right: 20px; /* Add space between logo and text */
 }
 
 .header-title {
@@ -138,4 +140,35 @@ form {
 .header-description {
   margin-bottom: 0;
   font-size: 16px;
+}
+
+.account-container {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.account-heading {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 36px;
+  color: #007bff;
+}
+
+.balance-list {
+  list-style: none;
+  padding: 0;
+}
+
+.balance-item {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #333;
+}
+
+.balance-item strong {
+  font-weight: bold;
+  color: #007bff;
 }

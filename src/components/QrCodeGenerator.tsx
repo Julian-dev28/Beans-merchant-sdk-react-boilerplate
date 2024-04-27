@@ -8,7 +8,11 @@ import {
 } from "../sdk/sdk";
 import { BeansMerchantSdkEnvironment } from "../sdk/environment";
 import { IFormState } from "../interfaces/IFormState";
+import * as StellarSdk from "@stellar/stellar-sdk";
 import "./styles.css";
+import Account from "./Account";
+const server = new StellarSdk.Horizon.Server("https://horizon.stellar.org");
+const accountId = `${BeansMerchantSdkEnvironment.ACCOUNT_ID}`;
 
 const QrCodeGenerator: React.FC = () => {
   const [formData, setFormData] = useState<IFormState>({
@@ -41,14 +45,23 @@ const QrCodeGenerator: React.FC = () => {
     }
   }, [formData.environment, formData.apiKey, formData.stellarAccountId]);
 
+  const getBalance = async () => {
+    const account = await server.loadAccount(accountId);
+    console.log("Balances for account: " + accountId);
+    account.balances.forEach(function (balance) {
+      console.log("Type:", balance.asset_type, ", Balance:", balance.balance);
+    });
+  };
+
+  useEffect(() => {
+    getBalance();
+  }, []);
+
   const handleGenerateQrCode = async () => {
     setLoading(true);
     try {
       if (!sdk || !formData.selectedCurrency) {
         alert("Please select a currency");
-        // throw new Error(
-        //   "SDK not initialized or currency not selected. Please check the environment settings and API key, and select a currency."
-        // );
         return;
       }
       const response: SvgQrCodeResponse = await sdk.generateSvgQrCode(
@@ -166,6 +179,7 @@ const QrCodeGenerator: React.FC = () => {
           {error}
         </div>
       )}
+      <Account />
     </div>
   );
 };
