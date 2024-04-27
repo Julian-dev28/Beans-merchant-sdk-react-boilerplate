@@ -14,6 +14,13 @@ interface Transaction {
   source_account: string;
   created_at: string;
   memo: string;
+  source_asset_code: string;
+}
+
+interface Payment {
+  id: string;
+  source_asset_code: string;
+  amount: string;
 }
 
 const Account: React.FC = () => {
@@ -21,6 +28,8 @@ const Account: React.FC = () => {
   const [transactionHistoryResult, setTransactionHistoryResult] = useState(
     [] as Transaction[]
   );
+
+  const [payments, setPayments] = useState([] as Payment[]);
 
   const getBalance = async () => {
     try {
@@ -95,6 +104,7 @@ const Account: React.FC = () => {
     es.onmessage = (message) => {
       const payment = JSON.parse(message.data);
       console.log("Payment received:", payment);
+      setPayments(payment);
     };
 
     es.onerror = (error) => {
@@ -132,6 +142,7 @@ const Account: React.FC = () => {
       >
         Start Streaming Payments
       </button>
+
       <br />
       <br />
       <h1 className="account-heading">Transaction History</h1>
@@ -153,6 +164,7 @@ const Account: React.FC = () => {
               Created At: {transaction.created_at}
               <br />
               Memo: {convertAssetType(transaction.memo)}
+              <br />
             </li>
           )
         )}
