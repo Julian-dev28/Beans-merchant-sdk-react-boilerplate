@@ -98,11 +98,9 @@ const Account: React.FC = () => {
     };
 
     es.onerror = (error) => {
-      console.error("error: REFRESH PAGE OR MAKE A PAYMENT TO STOP", error);
+      console.error("error: refresh page or make a payment", error);
     };
   };
-
-  const stopStreamingPayments = () => {};
 
   return (
     <div className="account-container">
