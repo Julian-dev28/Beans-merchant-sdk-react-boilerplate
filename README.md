@@ -39,11 +39,12 @@ yarn start
 
 To make a payment:
 
-1.Choose the currency and specify the amount and memo for the QR code.
-1.Scan the QR code using the Beans app.
-1.Open the Beans app and accept the transaction to complete the payment.
+1. Choose the currency and specify the amount and memo for the QR code.<br/>
+1. Scan the QR code using the Beans app.<br/>
+1. Open the Beans app and accept the transaction to complete the payment.<br/>
+   <br/>
 
-<img src="./bean.png" alt="image" width="30%" height="30%">
+   <img src="./bean.png" alt="image" width="30%" height="30%">
 
 # Contributing
 
