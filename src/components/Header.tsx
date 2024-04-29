@@ -19,7 +19,13 @@ const Header: React.FC = () => {
           </a>
         </h3>
         <p className="header-description mb-4">
-          This tool allows you to pay the Vertex Community fund using Stellar
+          <p>
+            This tool demonstrates the Beans Merchant SDK by allowing you to
+            generate QR codes for payments on Stellar.
+            <br />
+            Specifically, you can create QR codes to make payments to the Vertex
+            Community account.
+          </p>
         </p>
       </div>
     </div>
