@@ -28,8 +28,8 @@ To get a local copy up and running, follow these simple steps.
 Clone the repo and install the dependencies:
 
 ```bash
-git clone https://github.com/Julian-dev28/Beans-merchant-typescript-sdk
-cd Beans-merchant-typescript-sdk
+git clone https://github.com/Julian-dev28/Beans-merchant-sdk-react-boilerplate
+cd Beans-merchant-sdk-react-boilerplate
 yarn install
 ```
 
