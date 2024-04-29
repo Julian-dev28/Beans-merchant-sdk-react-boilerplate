@@ -2,6 +2,8 @@
 
 This repository contains a React app boilerplate designed for the Beans Merchant SDK. It allows users to generate QR codes for payments in USDC or XLM on the Stellar network. The app leverages the Stellar SDK to provide functionalities such as balance checking and payment streams.
 
+In this Demo, we have created a simple React app that generates QR codes for payment requests for the Vertex community wallet. The app allows users to specify the amount and memo for each payment. Users can then scan the generated QR code to complete the payment with the Beans app.
+
 ![App Screenshot](./shot.png)
 
 ## Features
